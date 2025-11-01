@@ -2,7 +2,19 @@ import random
 
 def main():
     def setup_player():
-        """
+      name = input("Enter your name:")
+      player = {"name": name,"health": 10, "inventory":[]}
+      return player
+
+      
+
+
+
+
+    
+       
+       
+      """
         Prompts the user to create their player profile.
 
         Returns:
@@ -21,6 +33,13 @@ def main():
 
 
     def create_treasures():
+
+        treasures = {"gold coin": random.randint(1,100),"ruby": random.randint(1,100), "ancient scroll": random.randint(1,100), "emerald": random.randint(1,100), "silver ring": random.randint(1,100)}
+        return treasures
+
+        
+
+    
         """
         Creates a dictionary of treasures, where each treasure has a value.
 
@@ -40,7 +59,22 @@ def main():
         # TODO: Return the dictionary
 
 
-    def display_options(room_number):
+    def display_options(player, room_number):
+
+        room_number: int
+    
+    
+        
+        print(f"You are in room {room_number}.")
+        print(f"How will you proceed {player['name']}?")
+        print("1. Search for more loot")
+        print("2. Move to the next room")
+        print("3. Check your life points and loot")
+        print("4. Surrender")
+
+            
+
+
         """
         Displays available options for the player in the current room.
 
@@ -59,7 +93,27 @@ def main():
 
 
     def search_room(player, treasures):
-        """
+
+        search = random.choice(["treasure", "trap"])
+
+        if search == "treasure":
+        
+            treasure_name = random.choice(list(treasures.keys()))
+            treasure_value = treasures[treasure_name]
+
+            player.setdefault("inventory", []).append(treasure_name)
+
+            print(f"You found some loot: {treasure_name} worth {treasure_value} gold!")
+
+        else:
+         
+         player["health"] -=2
+         print("You have fallen into a trap... You lost 2 life points")
+        
+         
+
+
+         """
         Simulates searching the current room.
 
         If the outcome is 'treasure', the player gains an item from treasures.
@@ -82,6 +136,18 @@ def main():
 
 
     def check_status(player):
+        print(f"Health: {player['health']}")
+
+        inventory = player.get("inventory", [])
+
+        if inventory:
+            print("Inventory:", ",".join(inventory))
+        else:
+            print("Inventory: You have no items yet.")
+        
+        
+        
+        
         """
         Displays the player’s current health and inventory.
 
@@ -101,6 +167,24 @@ def main():
 
 
     def end_game(player, treasures):
+
+        print(f"Final Health: {player['health']}")
+
+        inventory = player.get("inventory", [])
+
+        if inventory:
+            print("Treasures:", ",".join(inventory))
+        else:
+            print("Treasures: You gained nothing....")
+
+        total_gold = sum(treasures.get(item, 0) for item in inventory)
+        print(f"Total Gold: {total_gold} gold")
+
+        print(f"Game Over! Thanks for playing {player['name']}!")
+
+        
+        
+        
         """
         Ends the game and displays a summary.
 
@@ -117,6 +201,43 @@ def main():
 
 
     def run_game_loop(player, treasures):
+
+        for room_number in range(1,6):
+            print(f"You have entered Room {room_number}.")
+            while True:
+                display_options(player, room_number)
+                choice = input("Enter your decision: ").strip()
+
+        
+
+                if choice == "1":
+                    search_room(player, treasures)
+
+                    if player['health'] < 1:
+                        print(f"{player['name']} has been slain...")
+                        end_game(player, treasures)
+                        return
+                elif choice =="2":
+                    print(f"Moving to room {room_number + 1}")
+                    break
+                elif choice == "3":
+                    print(f"Player status:{player}")
+                elif choice == "4":
+                    print(f"{player['name']} has surrendered!")
+                    end_game(player, treasures)
+                    return
+                else:
+                    print("Invalid option. Please try again choose 1, 2, 3, or 4.")
+
+        print(f"You have explored all the rooms congrats on beating the dungeon, {player['name']}!")
+        end_game(player, treasures)
+
+
+        
+    
+
+
+
         """
         Main game loop that manages the rooms and player decisions.
 
